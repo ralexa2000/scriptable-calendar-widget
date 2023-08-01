@@ -25,7 +25,7 @@ async function buildCalendarView(
   dateFormatter.locale = settings.locale.split("-")[0];
 
   // if calendar is on a small widget make it a bit smaller to fit
-  const spacing = config.widgetFamily === "small" ? 18 : 19;
+  const spacing = config.widgetFamily === "small" ? 18 : 18;
 
   // Current month line
   const monthLine = rightStack.addStack();

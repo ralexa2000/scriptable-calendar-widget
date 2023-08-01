@@ -31,7 +31,7 @@ var settings = {
   showPrevMonth: true,
   showNextMonth: true,
   individualDateTargets: false,
-  flipped: params.flipped ? params.flipped : false,
+  flipped: params.flipped ? params.flipped : true,
 };
 var settings_default = settings;
 
@@ -54,7 +54,7 @@ function addWidgetTextLine(
   widget,
   {
     textColor = "#ffffff",
-    textSize = 12,
+    textSize = 11,
     opacity = 1,
     align,
     font,
@@ -298,7 +298,7 @@ function createDateImage(
       size - 2
     )
   );
-  drawing.setFont(Font.boldSystemFont(size * 0.5));
+  drawing.setFont(Font.regularSystemFont(size * 0.5));
   drawing.setTextAlignedCenter();
   drawing.setTextColor(new Color(textColor, 1));
   const textBox = new Rect(
@@ -372,7 +372,7 @@ async function buildCalendarView(date, stack, settings2) {
   const dateFormatter = new DateFormatter();
   dateFormatter.dateFormat = "MMMM";
   dateFormatter.locale = settings2.locale.split("-")[0];
-  const spacing = config.widgetFamily === "small" ? 18 : 19;
+  const spacing = config.widgetFamily === "small" ? 18 : 18;
   const monthLine = rightStack.addStack();
   monthLine.addSpacer(4);
   addWidgetTextLine_default(
@@ -520,6 +520,7 @@ function formatEvent(
   addWidgetTextLine_default(event.title, eventLine, {
     textColor,
     font: Font.mediumSystemFont(14),
+    opacity: 0.8,
     lineLimit: showCompleteTitle ? 0 : 1,
   });
   let time;
@@ -670,7 +671,7 @@ async function buildWidget(settings2) {
     default:
       if (settings2.flipped) {
         await buildCalendarView_default(today, globalStack, settings2);
-        globalStack.addSpacer(10);
+        globalStack.addSpacer(20);
         await buildEventsView_default(events, globalStack, settings2);
       } else {
         await buildEventsView_default(events, globalStack, settings2);

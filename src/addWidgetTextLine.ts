@@ -7,7 +7,7 @@ function addWidgetTextLine(
   widget: WidgetStack,
   {
     textColor = "#ffffff",
-    textSize = 12,
+    textSize = 11,
     opacity = 1,
     align,
     font,

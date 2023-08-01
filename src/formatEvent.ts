@@ -34,6 +34,7 @@ function formatEvent(
   addWidgetTextLine(event.title, eventLine, {
     textColor,
     font: Font.mediumSystemFont(14),
+    opacity: 0.8,
     lineLimit: showCompleteTitle ? 0 : 1,
   });
   // event duration

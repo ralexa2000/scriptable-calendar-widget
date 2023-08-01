@@ -42,7 +42,7 @@ function createDateImage(
     )
   );
 
-  drawing.setFont(Font.boldSystemFont(size * 0.5));
+  drawing.setFont(Font.regularSystemFont(size * 0.5));
   drawing.setTextAlignedCenter();
   drawing.setTextColor(new Color(textColor, 1));
   // the text aligns to the bottom of the rectangle while not extending to the

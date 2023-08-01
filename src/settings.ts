@@ -4,19 +4,19 @@ const params = JSON.parse(args.widgetParameter) || {};
 const settings: Settings = {
   // set to true to initially give Scriptable calendar access
   // set to false to open Calendar when script is run - when tapping on the widget
-  debug: false,
+  debug: true,
   // what app to open when the script is run in a widget,
   //   "calshow" is the ios calendar app
   //   "x-fantastical3" for fantastical
-  calendarApp: "calshow",
+  calendarApp: "googlecalendar",
   // a separate image can be specified per widget in widget params:
   // Long press on widget -> Edit Widget -> Parameter
   // parameter config would look like this:
   // { "bg": "2111.jpg", "view": "events" }
   backgroundImage: params.bg ? params.bg : "transparent.jpg",
   // what calendars to show, all if empty or something like: ["Work"]
-  calFilter: params.calFilter ? params.calFilter : [],
-  widgetBackgroundColor: "#000000",
+  calFilter: params.calFilter ? params.calFilter : ["Appointments", "Background", "Plans", "Birthdays"],
+  widgetBackgroundColor: "#1c1c1e",
   todayTextColor: "#000000",
   markToday: true,
   // background color for today
@@ -41,7 +41,7 @@ const settings: Settings = {
   // color for events
   textColor: "#ffffff",
   // opacity value for event times
-  eventDateTimeOpacity: 0.7,
+  eventDateTimeOpacity: 0.5,
   // what the widget shows
   widgetType: params.view ? params.view : "cal",
   // show or hide all day events
@@ -63,7 +63,7 @@ const settings: Settings = {
   // tapping on a date opens that specific one
   individualDateTargets: false,
   // events-calendar OR a flipped calendar-events type of view for medium widget
-  flipped: params.flipped ? params.flipped : false,
+  flipped: params.flipped ? params.flipped : true,
 };
 
 export interface Settings {
