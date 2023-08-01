@@ -1,11 +1,13 @@
 // src/settings.ts
 var params = JSON.parse(args.widgetParameter) || {};
 var settings = {
-  debug: false,
-  calendarApp: "calshow",
+  debug: true,
+  calendarApp: "googlecalendar",
   backgroundImage: params.bg ? params.bg : "transparent.jpg",
-  calFilter: params.calFilter ? params.calFilter : [],
-  widgetBackgroundColor: "#000000",
+  calFilter: params.calFilter
+    ? params.calFilter
+    : ["Appointments", "Background", "Plans", "Birthdays"],
+  widgetBackgroundColor: "#1c1c1e",
   todayTextColor: "#000000",
   markToday: true,
   todayCircleColor: "#FFB800",
@@ -18,7 +20,7 @@ var settings = {
   weekendDates: "#FFB800",
   locale: "en-US",
   textColor: "#ffffff",
-  eventDateTimeOpacity: 0.7,
+  eventDateTimeOpacity: 0.5,
   widgetType: params.view ? params.view : "cal",
   showAllDayEvents: true,
   showCalendarBullet: true,
