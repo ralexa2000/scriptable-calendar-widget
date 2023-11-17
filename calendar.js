@@ -18,7 +18,7 @@ var settings = {
   weekendLetters: "#FFB800",
   weekendLetterOpacity: 1,
   weekendDates: "#FFB800",
-  locale: "en-US",
+  locale: "ru-RU",
   textColor: "#ffffff",
   eventDateTimeOpacity: 0.5,
   widgetType: params.view ? params.view : "cal",
@@ -26,12 +26,13 @@ var settings = {
   showCalendarBullet: true,
   startWeekOnSunday: false,
   showEventsOnlyForToday: false,
-  nextNumOfDays: 7,
+  nextNumOfDays: 31,
   showCompleteTitle: false,
   showPrevMonth: true,
   showNextMonth: true,
   individualDateTargets: false,
   flipped: params.flipped ? params.flipped : true,
+  twoColumnsEvents: true,
 };
 var settings_default = settings;
 
@@ -466,22 +467,6 @@ function formatTime(date) {
 }
 var formatTime_default = formatTime;
 
-// src/getSuffix.ts
-function getSuffix(date) {
-  if (date > 3 && date < 21) return "th";
-  switch (date % 10) {
-    case 1:
-      return "st";
-    case 2:
-      return "nd";
-    case 3:
-      return "rd";
-    default:
-      return "th";
-  }
-}
-var getSuffix_default = getSuffix;
-
 // src/getEventIcon.ts
 function getEventIcon(event) {
   if (event.attendees === null) {
@@ -506,20 +491,27 @@ var getEventIcon_default = getEventIcon;
 function formatEvent(
   stack,
   event,
-  { eventDateTimeOpacity, textColor, showCalendarBullet, showCompleteTitle }
+  {
+    eventDateTimeOpacity,
+    textColor,
+    showCalendarBullet,
+    showCompleteTitle,
+    locale,
+    startWeekOnSunday = false,
+  }
 ) {
   const eventLine = stack.addStack();
   if (showCalendarBullet) {
     const icon = getEventIcon_default(event);
     addWidgetTextLine_default(icon, eventLine, {
       textColor: event.calendar.color.hex,
-      font: Font.mediumSystemFont(14),
+      font: Font.mediumSystemFont(17),
       lineLimit: showCompleteTitle ? 0 : 1,
     });
   }
   addWidgetTextLine_default(event.title, eventLine, {
     textColor,
-    font: Font.mediumSystemFont(14),
+    font: Font.mediumSystemFont(12),
     opacity: 0.8,
     lineLimit: showCompleteTitle ? 0 : 1,
   });
@@ -527,19 +519,31 @@ function formatEvent(
   if (event.isAllDay) {
     time = "All Day";
   } else {
-    time = `${formatTime_default(event.startDate)} - ${formatTime_default(
+    time = `${formatTime_default(event.startDate)}-${formatTime_default(
       event.endDate
     )}`;
   }
-  const today = new Date().getDate();
+  const date = new Date();
+  const today = date.getDate();
+  const tomorrow = new Date(date.setDate(date.getDate() + 1)).getDate();
   const eventDate = event.startDate.getDate();
+  let eventDateStr;
+  if (eventDate == tomorrow) {
+    eventDateStr = "\u0417\u0430\u0432\u0442\u0440\u0430";
+  } else {
+    eventDateStr = event.startDate.toLocaleDateString(locale, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+  }
   if (eventDate !== today) {
-    time = `${eventDate}${getSuffix_default(eventDate)} ${time}`;
+    time = `${eventDateStr} ${time}`;
   }
   addWidgetTextLine_default(time, stack, {
     textColor,
     opacity: eventDateTimeOpacity,
-    font: Font.regularSystemFont(14),
+    font: Font.regularSystemFont(11),
   });
 }
 var formatEvent_default = formatEvent;
@@ -654,28 +658,38 @@ async function buildWidget(settings2) {
   widget.backgroundColor = new Color(settings2.widgetBackgroundColor, 1);
   setWidgetBackground_default(widget, settings2.backgroundImage);
   widget.setPadding(16, 16, 16, 16);
-  const today = new Date();
+  const start_day = new Date();
   const globalStack = widget.addStack();
-  const events = await getEvents_default(today, settings2);
+  const events = await getEvents_default(start_day, settings2);
   switch (config.widgetFamily) {
     case "small":
       if (settings2.widgetType === "events") {
         await buildEventsView_default(events, globalStack, settings2);
       } else {
-        await buildCalendarView_default(today, globalStack, settings2);
+        await buildCalendarView_default(start_day, globalStack, settings2);
       }
       break;
     case "large":
-      await buildLargeWidget_default(today, events, globalStack, settings2);
+      await buildLargeWidget_default(start_day, events, globalStack, settings2);
       break;
     default:
-      if (settings2.flipped) {
-        await buildCalendarView_default(today, globalStack, settings2);
-        globalStack.addSpacer(20);
-        await buildEventsView_default(events, globalStack, settings2);
+      if (settings2.twoColumnsEvents) {
+        start_day.setDate(start_day.getDate() + 1);
+        const events2 = await getEvents_default(start_day, settings2);
+        await buildEventsView_default(events2, globalStack, settings2, {
+          eventLimit: 3,
+        });
+        globalStack.addSpacer(5);
+        await buildEventsView_default(events2.slice(3), globalStack, settings2);
       } else {
-        await buildEventsView_default(events, globalStack, settings2);
-        await buildCalendarView_default(today, globalStack, settings2);
+        if (settings2.flipped) {
+          await buildCalendarView_default(start_day, globalStack, settings2);
+          globalStack.addSpacer(10);
+          await buildEventsView_default(events, globalStack, settings2);
+        } else {
+          await buildEventsView_default(events, globalStack, settings2);
+          await buildCalendarView_default(start_day, globalStack, settings2);
+        }
       }
       break;
   }

@@ -36,7 +36,7 @@ const settings: Settings = {
   weekendDates: "#FFB800",
 
   // changes some locale specific values, such as weekday letters
-  locale: "en-US",
+  locale: "ru-RU",
 
   // color for events
   textColor: "#ffffff",
@@ -53,7 +53,7 @@ const settings: Settings = {
   // show events for the whole week or limit just to the day
   showEventsOnlyForToday: false,
   // shows events for that many days if showEventsOnlyForToday is false
-  nextNumOfDays: 7,
+  nextNumOfDays: 31,
   // show full title or truncate to a single line
   showCompleteTitle: false,
   // shows the last days of the previous month if they fit
@@ -64,6 +64,8 @@ const settings: Settings = {
   individualDateTargets: false,
   // events-calendar OR a flipped calendar-events type of view for medium widget
   flipped: params.flipped ? params.flipped : true,
+  // show just events in two columns (without today date)
+  twoColumnsEvents: true,
 };
 
 export interface Settings {
@@ -96,6 +98,7 @@ export interface Settings {
   showNextMonth: boolean;
   individualDateTargets: boolean;
   flipped: boolean;
+  twoColumnsEvents: boolean;
 }
 
 export default settings;

@@ -11,31 +11,39 @@ async function buildWidget(settings: Settings): Promise<ListWidget> {
   setWidgetBackground(widget, settings.backgroundImage);
   widget.setPadding(16, 16, 16, 16);
 
-  const today = new Date();
+  const start_day = new Date();
   // layout horizontally
   const globalStack = widget.addStack();
 
-  const events = await getEvents(today, settings);
+  const events = await getEvents(start_day, settings);
 
   switch (config.widgetFamily) {
     case "small":
       if (settings.widgetType === "events") {
         await buildEventsView(events, globalStack, settings);
       } else {
-        await buildCalendarView(today, globalStack, settings);
+        await buildCalendarView(start_day, globalStack, settings);
       }
       break;
     case "large":
-      await buildLargeWidget(today, events, globalStack, settings);
+      await buildLargeWidget(start_day, events, globalStack, settings);
       break;
     default:
-      if (settings.flipped) {
-        await buildCalendarView(today, globalStack, settings);
-        globalStack.addSpacer(20);
-        await buildEventsView(events, globalStack, settings);
+      if (settings.twoColumnsEvents) {
+        start_day.setDate(start_day.getDate() + 1);
+        const events = await getEvents(start_day, settings);
+        await buildEventsView(events, globalStack, settings, {"eventLimit": 3});
+        globalStack.addSpacer(5);
+        await buildEventsView(events.slice(3), globalStack, settings);
       } else {
-        await buildEventsView(events, globalStack, settings);
-        await buildCalendarView(today, globalStack, settings);
+        if (settings.flipped) {
+          await buildCalendarView(start_day, globalStack, settings);
+          globalStack.addSpacer(10);
+          await buildEventsView(events, globalStack, settings);
+        } else {
+          await buildEventsView(events, globalStack, settings);
+          await buildCalendarView(start_day, globalStack, settings);
+        }
       }
       break;
   }
