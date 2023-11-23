@@ -26,7 +26,7 @@ var settings = {
   showCalendarBullet: true,
   startWeekOnSunday: false,
   showEventsOnlyForToday: false,
-  nextNumOfDays: 31,
+  nextNumOfDays: 120,
   showCompleteTitle: false,
   showPrevMonth: true,
   showNextMonth: true,
@@ -676,11 +676,31 @@ async function buildWidget(settings2) {
       if (settings2.twoColumnsEvents) {
         start_day.setDate(start_day.getDate() + 1);
         const events2 = await getEvents_default(start_day, settings2);
-        await buildEventsView_default(events2, globalStack, settings2, {
-          eventLimit: 3,
-        });
+        let eventsNoDuplicates = [];
+        let eventIds = [];
+        for (const event of events2) {
+          let eventId = event["identifier"];
+          if (eventId.includes("/")) {
+            eventId = eventId.split("/")[0];
+          }
+          if (!eventIds.includes(eventId)) {
+            eventsNoDuplicates.push(event);
+            eventIds.push(eventId);
+          }
+        }
+        await buildEventsView_default(
+          eventsNoDuplicates,
+          globalStack,
+          settings2,
+          { eventLimit: 3 }
+        );
         globalStack.addSpacer(5);
-        await buildEventsView_default(events2.slice(3), globalStack, settings2);
+        await buildEventsView_default(
+          eventsNoDuplicates.slice(3),
+          globalStack,
+          settings2,
+          { eventLimit: 3 }
+        );
       } else {
         if (settings2.flipped) {
           await buildCalendarView_default(start_day, globalStack, settings2);

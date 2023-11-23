@@ -32,14 +32,30 @@ async function buildWidget(settings: Settings): Promise<ListWidget> {
       if (settings.twoColumnsEvents) {
         start_day.setDate(start_day.getDate() + 1);
         const events = await getEvents(start_day, settings);
-        await buildEventsView(events, globalStack, settings, {"eventLimit": 3});
+
+        let eventsNoDuplicates: CalendarEvent[] = [];
+        let eventIds = [];
+        for (const event of events) {
+          let eventId = event["identifier"];
+          if (eventId.includes("/")) {
+            eventId = eventId.split("/")[0];
+          }
+          if (!eventIds.includes(eventId)) {
+            eventsNoDuplicates.push(event);
+            eventIds.push(eventId);
+          }
+        }
+
+        await buildEventsView(eventsNoDuplicates, globalStack, settings, {"eventLimit": 3});
         globalStack.addSpacer(5);
-        await buildEventsView(events.slice(3), globalStack, settings);
+        await buildEventsView(eventsNoDuplicates.slice(3), globalStack, settings, {"eventLimit": 3});
+
       } else {
         if (settings.flipped) {
           await buildCalendarView(start_day, globalStack, settings);
           globalStack.addSpacer(10);
           await buildEventsView(events, globalStack, settings);
+
         } else {
           await buildEventsView(events, globalStack, settings);
           await buildCalendarView(start_day, globalStack, settings);

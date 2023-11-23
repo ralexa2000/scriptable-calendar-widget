@@ -53,7 +53,7 @@ const settings: Settings = {
   // show events for the whole week or limit just to the day
   showEventsOnlyForToday: false,
   // shows events for that many days if showEventsOnlyForToday is false
-  nextNumOfDays: 31,
+  nextNumOfDays: 120,
   // show full title or truncate to a single line
   showCompleteTitle: false,
   // shows the last days of the previous month if they fit
