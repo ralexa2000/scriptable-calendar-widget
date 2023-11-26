@@ -28,7 +28,7 @@ function formatEvent(
     const icon = getEventIcon(event);
     addWidgetTextLine(icon, eventLine, {
       textColor: event.calendar.color.hex,
-      font: Font.mediumSystemFont(17),
+      font: Font.mediumSystemFont(12),
       lineLimit: showCompleteTitle ? 0 : 1,
     });
   }
@@ -48,16 +48,15 @@ function formatEvent(
     time = `${formatTime(event.startDate)}-${formatTime(event.endDate)}`;
   }
 
-  const date = new Date();
-  const today = date.getDate();
-  const tomorrow = new Date(date.setDate(date.getDate() + 1)).getDate();
-  const eventDate = event.startDate.getDate();
+  const today = new Date();
+  const tomorrow = new Date(today.setDate(today.getDate() + 1));
+  const eventDate = event.startDate;
 
   let eventDateStr: string;
   if (eventDate == tomorrow) {
     eventDateStr = "Завтра";
   } else {
-    eventDateStr = event.startDate.toLocaleDateString(
+    eventDateStr = eventDate.toLocaleDateString(
       locale,
       {weekday: "short", day: "numeric", month: "short"},
     );

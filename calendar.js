@@ -505,7 +505,7 @@ function formatEvent(
     const icon = getEventIcon_default(event);
     addWidgetTextLine_default(icon, eventLine, {
       textColor: event.calendar.color.hex,
-      font: Font.mediumSystemFont(17),
+      font: Font.mediumSystemFont(12),
       lineLimit: showCompleteTitle ? 0 : 1,
     });
   }
@@ -523,15 +523,14 @@ function formatEvent(
       event.endDate
     )}`;
   }
-  const date = new Date();
-  const today = date.getDate();
-  const tomorrow = new Date(date.setDate(date.getDate() + 1)).getDate();
-  const eventDate = event.startDate.getDate();
+  const today = new Date();
+  const tomorrow = new Date(today.setDate(today.getDate() + 1));
+  const eventDate = event.startDate;
   let eventDateStr;
   if (eventDate == tomorrow) {
     eventDateStr = "\u0417\u0430\u0432\u0442\u0440\u0430";
   } else {
-    eventDateStr = event.startDate.toLocaleDateString(locale, {
+    eventDateStr = eventDate.toLocaleDateString(locale, {
       weekday: "short",
       day: "numeric",
       month: "short",
