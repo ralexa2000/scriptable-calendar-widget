@@ -524,14 +524,28 @@ function formatEvent(
     )}`;
   }
   const today = new Date();
-  const tomorrow = new Date(today.setDate(today.getDate() + 1));
+  const date = new Date();
+  const tomorrow = new Date(date.setDate(date.getDate() + 1));
   const eventDate = event.startDate;
+  const diffDays = Math.abs(eventDate - new Date()) / (1e3 * 60 * 60 * 24);
+  console.log(event.title);
+  console.log(eventDate);
+  console.log(today);
+  console.log(tomorrow);
+  console.log("");
   let eventDateStr;
-  if (eventDate == tomorrow) {
+  if (eventDate.getDate() == today.getDate()) {
+    eventDateStr = "\u0421\u0435\u0433\u043E\u0434\u043D\u044F";
+  } else if (eventDate.getDate() == tomorrow.getDate()) {
     eventDateStr = "\u0417\u0430\u0432\u0442\u0440\u0430";
-  } else {
+  } else if (diffDays <= 7) {
     eventDateStr = eventDate.toLocaleDateString(locale, {
       weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+  } else {
+    eventDateStr = eventDate.toLocaleDateString(locale, {
       day: "numeric",
       month: "short",
     });
@@ -673,7 +687,6 @@ async function buildWidget(settings2) {
       break;
     default:
       if (settings2.twoColumnsEvents) {
-        start_day.setDate(start_day.getDate() + 1);
         const events2 = await getEvents_default(start_day, settings2);
         let eventsNoDuplicates = [];
         let eventIds = [];

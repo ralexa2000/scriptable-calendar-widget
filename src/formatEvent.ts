@@ -49,16 +49,30 @@ function formatEvent(
   }
 
   const today = new Date();
-  const tomorrow = new Date(today.setDate(today.getDate() + 1));
+  const date = new Date();
+  const tomorrow = new Date(date.setDate(date.getDate() + 1));
   const eventDate = event.startDate;
+  const diffDays = Math.abs(eventDate - new Date()) / (1000 * 60 * 60 * 24);
+  console.log(event.title);
+  console.log(eventDate);
+  console.log(today);
+  console.log(tomorrow);
+  console.log("");
 
   let eventDateStr: string;
-  if (eventDate == tomorrow) {
+  if (eventDate.getDate() == today.getDate()) {
+    eventDateStr = "Сегодня";
+  } else if (eventDate.getDate() == tomorrow.getDate()) {
     eventDateStr = "Завтра";
-  } else {
+  } else if (diffDays <= 7) {
     eventDateStr = eventDate.toLocaleDateString(
       locale,
       {weekday: "short", day: "numeric", month: "short"},
+    );
+  } else {
+    eventDateStr = eventDate.toLocaleDateString(
+      locale,
+      {day: "numeric", month: "short"},
     );
   }
 

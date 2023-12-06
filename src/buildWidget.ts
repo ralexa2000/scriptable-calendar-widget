@@ -30,7 +30,6 @@ async function buildWidget(settings: Settings): Promise<ListWidget> {
       break;
     default:
       if (settings.twoColumnsEvents) {
-        start_day.setDate(start_day.getDate() + 1);
         const events = await getEvents(start_day, settings);
 
         let eventsNoDuplicates: CalendarEvent[] = [];
